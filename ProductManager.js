@@ -98,8 +98,29 @@ class ProductManager {
         console.error("Error en getProductsFromFile:", error);
         return [];
     }
+
 }
 
+
+updateProduct(id, updatedFields) {
+  const products = this.getProductsFromFile();
+  const indexToUpdate = products.findIndex(product => product.id === id);
+
+  if (indexToUpdate !== -1) {
+      // Update fields without changing the ID
+      products[indexToUpdate] = { ...products[indexToUpdate], ...updatedFields };
+      this.saveProductsToFile(products);
+      return products[indexToUpdate];
+  }
+
+  return null; // Product not found
+}
+
+deleteProduct(id) {
+  let products = this.getProductsFromFile();
+  products = products.filter(product => product.id !== id);
+  this.saveProductsToFile(products);
+}
   saveProductsToFile(products) {
     fs.writeFile(this.path, JSON.stringify(products, null, 2), "utf-8");
   }
